@@ -1,4 +1,4 @@
-#include "TreeData.h"
+#include "CrossSpeciesComparisonTreeData.h"
 
 #include <Application.h>
 
@@ -13,18 +13,18 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 
-Q_PLUGIN_METADATA(IID "nl.BioVault.TreeData")
+Q_PLUGIN_METADATA(IID "nl.BioVault.CrossSpeciesComparisonTreeData")
 
 using namespace mv;
 
 
 
-TreeData::~TreeData(void)
+CrossSpeciesComparisonTreeData::~CrossSpeciesComparisonTreeData(void)
 {
 
 }
 
-void TreeData::init()
+void CrossSpeciesComparisonTreeData::init()
 {
 
 
@@ -87,13 +87,13 @@ QJsonObject sortJsonObject(QJsonObject obj) {
     return obj;
 }
 
-Dataset<DatasetImpl> TreeData::createDataSet(const QString& guid /*= ""*/) const
+Dataset<DatasetImpl> CrossSpeciesComparisonTreeData::createDataSet(const QString& guid /*= ""*/) const
 {
-    auto dataset = Dataset<DatasetImpl>(new Tree(getName(), true, guid));
+    auto dataset = Dataset<DatasetImpl>(new CrossSpeciesComparisonTree(getName(), true, guid));
     return dataset;
 }
 
-void TreeData::setData(QJsonObject jsonString)
+void CrossSpeciesComparisonTreeData::setData(QJsonObject jsonString)
 {
     sortJsonObject(jsonString);
     std::cout << QJsonDocument(jsonString).toJson().toStdString() << std::endl;
@@ -103,82 +103,82 @@ void TreeData::setData(QJsonObject jsonString)
 
 }
 
-QJsonObject& TreeData::getData()
+QJsonObject& CrossSpeciesComparisonTreeData::getData()
 {
     return _data;
 }
 
-QStringList& TreeData::getSpeciesNames()
+QStringList& CrossSpeciesComparisonTreeData::getSpeciesNames()
 {
     return _speciesNames;
 }
 
-QIcon TreeDataFactory::getIcon(const QColor& color /*= Qt::black*/) const
+QIcon CrossSpeciesComparisonTreeDataFactory::getIcon(const QColor& color /*= Qt::black*/) const
 {
     return Application::getIconFont("FontAwesome").getIcon("sitemap", color);
 }
 
-mv::plugin::RawData* TreeDataFactory::produce()
+mv::plugin::RawData* CrossSpeciesComparisonTreeDataFactory::produce()
 {
-    return new TreeData(this);
+    return new CrossSpeciesComparisonTreeData(this);
 }
 
-QIcon Tree::getIcon(const QColor& color /*= Qt::black*/) const
+QIcon CrossSpeciesComparisonTree::getIcon(const QColor& color /*= Qt::black*/) const
 {
     return Application::getIconFont("FontAwesome").getIcon("sitemap", color);
 }
 
-std::vector<std::uint32_t>& Tree::getSelectionIndices()
+std::vector<std::uint32_t>& CrossSpeciesComparisonTree::getSelectionIndices()
 {
-    return getSelection<Tree>()->indices;
+    return getSelection<CrossSpeciesComparisonTree>()->indices;
 }
 
-void Tree::setSelectionIndices(const std::vector<std::uint32_t>& indices)
+void CrossSpeciesComparisonTree::setSelectionIndices(const std::vector<std::uint32_t>& indices)
 {
 }
 
-bool Tree::canSelect() const
+bool CrossSpeciesComparisonTree::canSelect() const
 {
     return false;
 }
 
-bool Tree::canSelectAll() const
+bool CrossSpeciesComparisonTree::canSelectAll() const
 {
     return false;
 }
 
-bool Tree::canSelectNone() const
+bool CrossSpeciesComparisonTree::canSelectNone() const
 {
     return false;
 }
 
-bool Tree::canSelectInvert() const
+bool CrossSpeciesComparisonTree::canSelectInvert() const
 {
     return false;
 }
 
-void Tree::selectAll()
+void CrossSpeciesComparisonTree::selectAll()
 {
 }
 
-void Tree::selectNone()
+void CrossSpeciesComparisonTree::selectNone()
 {
 }
 
-void Tree::selectInvert()
+void CrossSpeciesComparisonTree::selectInvert()
 {
 }
 
-void Tree::setData(QJsonObject jsonString)
+void CrossSpeciesComparisonTree::setData(QJsonObject jsonString)
 {
-    getRawData<TreeData>()->setData(jsonString);
+    getRawData<CrossSpeciesComparisonTreeData>()->setData(jsonString);
 }
-QJsonObject& Tree::getData()
+QJsonObject& CrossSpeciesComparisonTree::getData()
 {
-    return  getRawData<TreeData>()->getData();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getData();// TODO: insert return statement here
 }
 
-QStringList& Tree::getSpeciesNames()
+QStringList& CrossSpeciesComparisonTree::getSpeciesNames()
 {
-    return  getRawData<TreeData>()->getSpeciesNames();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getSpeciesNames();// TODO: insert return statement here
 }

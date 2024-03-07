@@ -1,5 +1,5 @@
 #pragma once
-#include "treedata_export.h"
+#include "crossspeciescomparisontreedata_export.h"
 #include <RawData.h>
 #include <Set.h>
 #include <QJsonObject>
@@ -11,18 +11,18 @@ using namespace mv::plugin;
 // Data Type
 // =============================================================================
 
-const mv::DataType TreeType = mv::DataType(QString("Tree"));
+const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossSpeciesComparisonTree"));
 
 // =============================================================================
 // Raw Data
 // =============================================================================
 
-class TREEDATA_EXPORT TreeData : public mv::plugin::RawData
+class CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTreeData : public mv::plugin::RawData
 {
 public:
 
-    TreeData(PluginFactory* factory) : mv::plugin::RawData(factory, TreeType) { }
-    ~TreeData(void) override;
+    CrossSpeciesComparisonTreeData(PluginFactory* factory) : mv::plugin::RawData(factory, CrossSpeciesComparisonTreeType) { }
+    ~CrossSpeciesComparisonTreeData(void) override;
 
     void init() override;
 
@@ -41,20 +41,20 @@ private:
     QStringList _speciesNames;
 };
 
-class  TREEDATA_EXPORT Tree : public mv::DatasetImpl
+class  CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTree : public mv::DatasetImpl
 {
 public:
-    Tree(QString dataName, bool mayUnderive = true, const QString& guid = "") :
+    CrossSpeciesComparisonTree(QString dataName, bool mayUnderive = true, const QString& guid = "") :
         mv::DatasetImpl(dataName, mayUnderive, guid)
     {
         
     }
 
-    ~Tree() override { }
+    ~CrossSpeciesComparisonTree() override { }
 
     Dataset<mv::DatasetImpl> copy() const override
     {
-        auto text = new Tree(getRawDataName());
+        auto text = new CrossSpeciesComparisonTree(getRawDataName());
 
         text->setText(this->text());
         text->indices = indices;
@@ -127,16 +127,16 @@ public: // Selection
 // Factory
 // =============================================================================
 
-class TreeDataFactory : public RawDataFactory
+class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
 {
     Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
         Q_OBJECT
-        Q_PLUGIN_METADATA(IID   "nl.BioVault.TreeData"
-            FILE  "TreeData.json")
+        Q_PLUGIN_METADATA(IID   "nl.BioVault.CrossSpeciesComparisonTreeData"
+            FILE  "CrossSpeciesComparisonTreeData.json")
 
 public:
-    TreeDataFactory(void) {}
-    ~TreeDataFactory(void) override {}
+    CrossSpeciesComparisonTreeDataFactory(void) {}
+    ~CrossSpeciesComparisonTreeDataFactory(void) override {}
 
     /**
      * Get plugin icon

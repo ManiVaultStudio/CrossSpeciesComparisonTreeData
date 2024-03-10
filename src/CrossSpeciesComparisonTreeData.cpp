@@ -59,7 +59,7 @@ Dataset<DatasetImpl> CrossSpeciesComparisonTreeData::createDataSet(const QString
     return dataset;
 }
 
-void CrossSpeciesComparisonTreeData::setTreeData(QJsonObject jsonString)
+void CrossSpeciesComparisonTreeData::setTreeDataRaw(QJsonObject jsonString)
 {
     //sortJsonObject(jsonString);
 
@@ -73,17 +73,17 @@ void CrossSpeciesComparisonTreeData::setTreeData(QJsonObject jsonString)
     qDebug() << "**************************************************";
 }
 
-void CrossSpeciesComparisonTreeData::setTreeSpeciesNames(QStringList jsonString)
+void CrossSpeciesComparisonTreeData::setTreeSpeciesNamesRaw(QStringList jsonString)
 {
         _speciesNames = jsonString;
 }
 
-QJsonObject& CrossSpeciesComparisonTreeData::getTreeData()
+QJsonObject& CrossSpeciesComparisonTreeData::getTreeDataRaw()
 {
     return _data;
 }
 
-QStringList& CrossSpeciesComparisonTreeData::getTreeSpeciesNames()
+QStringList& CrossSpeciesComparisonTreeData::getTreeSpeciesNamesRaw()
 {
     return _speciesNames;
 }
@@ -155,18 +155,22 @@ void CrossSpeciesComparisonTree::selectInvert()
 void CrossSpeciesComparisonTree::setTreeData(QJsonObject jsonString)
 {
     qDebug() << "%%3ItsSetting3%%";
-    getRawData<CrossSpeciesComparisonTreeData>()->setData(jsonString);
+    getRawData<CrossSpeciesComparisonTreeData>()->setTreeDataRaw(jsonString);
     qDebug()<< "jsonString"<<jsonString;
     qDebug() << "%%3ItsSetting3%%";
     //getRawData<CrossSpeciesComparisonTreeData>()->changed();
     events().notifyDatasetDataChanged(this);
 }
+void CrossSpeciesComparisonTree::setTreeSpeciesNames(QStringList jsonString)
+{
+    getRawData<CrossSpeciesComparisonTreeData>()->setTreeSpeciesNamesRaw(jsonString);
+}
 QJsonObject& CrossSpeciesComparisonTree::getTreeData()
 {
-    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeData();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeDataRaw();// TODO: insert return statement here
 }
 
 QStringList& CrossSpeciesComparisonTree::getTreeSpeciesNames()
 {
-    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeSpeciesNames();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeSpeciesNamesRaw();// TODO: insert return statement here
 }

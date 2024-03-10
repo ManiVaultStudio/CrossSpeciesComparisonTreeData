@@ -43,6 +43,8 @@ set(CROSSSPECIESCOMPARISONTREEDATA_SOURCES
     src/CrossSpeciesComparisonTreeData.h
     src/CrossSpeciesComparisonTreeData.cpp
     src/CrossSpeciesComparisonTreeData.json
+	src/InfoAction.h
+	src/InfoAction.cpp
 )
 
 set(Tree_DATA_HEADERS

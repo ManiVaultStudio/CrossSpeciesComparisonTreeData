@@ -1,5 +1,5 @@
 #include "CrossSpeciesComparisonTreeData.h"
-
+#include "InfoAction.h"
 #include <Application.h>
 
 #include <QtCore>
@@ -121,6 +121,14 @@ QIcon CrossSpeciesComparisonTreeDataFactory::getIcon(const QColor& color /*= Qt:
 mv::plugin::RawData* CrossSpeciesComparisonTreeDataFactory::produce()
 {
     return new CrossSpeciesComparisonTreeData(this);
+}
+
+void CrossSpeciesComparisonTree::init()
+{
+    _infoAction = QSharedPointer<InfoAction>::create(nullptr, *this);
+
+    addAction(*_infoAction.get());
+
 }
 
 QIcon CrossSpeciesComparisonTree::getIcon(const QColor& color /*= Qt::black*/) const

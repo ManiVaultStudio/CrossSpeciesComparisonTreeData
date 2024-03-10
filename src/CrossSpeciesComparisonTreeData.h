@@ -10,7 +10,7 @@ using namespace mv::plugin;
 // =============================================================================
 // Data Type
 // =============================================================================
-
+class InfoAction;
 const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossSpeciesComparisonTree"));
 
 // =============================================================================
@@ -51,7 +51,7 @@ public:
     }
 
     ~CrossSpeciesComparisonTree() override { }
-
+    void init() override;
     Dataset<mv::DatasetImpl> copy() const override
     {
         auto text = new CrossSpeciesComparisonTree(getRawDataName());
@@ -118,7 +118,7 @@ public: // Selection
     void setData(QJsonObject jsonString);
     QJsonObject& getData();
     QStringList& getSpeciesNames();
-
+    QSharedPointer<InfoAction>      _infoAction;
     std::vector<unsigned int> indices;
 
 };

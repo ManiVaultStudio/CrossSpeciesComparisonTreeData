@@ -10,7 +10,7 @@ using namespace mv::plugin;
 // =============================================================================
 // Data Type
 // =============================================================================
-
+class InfoAction;
 const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossSpeciesComparisonTree"));
 
 // =============================================================================
@@ -32,9 +32,10 @@ public:
      * @return Smart pointer to dataset
      */
     Dataset<mv::DatasetImpl> createDataSet(const QString& guid = "") const override;
-    void setData(QJsonObject jsonString);
-    QJsonObject& getData();
-    QStringList& getSpeciesNames();
+    void setTreeDataRaw(QJsonObject jsonString);
+    void setTreeSpeciesNamesRaw(QStringList jsonString);
+    QJsonObject& getTreeDataRaw();
+    QStringList& getTreeSpeciesNamesRaw();
 
 private:
     QJsonObject _data;
@@ -51,7 +52,7 @@ public:
     }
 
     ~CrossSpeciesComparisonTree() override { }
-
+    void init() override;
     Dataset<mv::DatasetImpl> copy() const override
     {
         auto text = new CrossSpeciesComparisonTree(getRawDataName());
@@ -115,10 +116,11 @@ public: // Selection
 
     /** Invert item selection */
     void selectInvert() override;
-    void setData(QJsonObject jsonString);
-    QJsonObject& getData();
-    QStringList& getSpeciesNames();
-
+    void setTreeData(QJsonObject jsonString);
+    void setTreeSpeciesNames(QStringList jsonString);
+    QJsonObject& getTreeData();
+    QStringList& getTreeSpeciesNames();
+    QSharedPointer<InfoAction>      _infoAction;
     std::vector<unsigned int> indices;
 
 };

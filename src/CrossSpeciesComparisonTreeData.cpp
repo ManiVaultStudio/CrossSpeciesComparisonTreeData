@@ -59,18 +59,19 @@ Dataset<DatasetImpl> CrossSpeciesComparisonTreeData::createDataSet(const QString
     return dataset;
 }
 
+
 void CrossSpeciesComparisonTreeData::setTreeDataRaw(QJsonObject jsonString)
 {
     //sortJsonObject(jsonString);
 
-    qDebug() << "**************************************************";
-
-    std::cout << QJsonDocument(jsonString).toJson().toStdString() << std::endl;
+    
+    //qDebug() << "**************************************************";
     _data = jsonString;
     _speciesNames.clear();
     _speciesNames = getNames(_data);
-    std::cout<< "Species names: " << _speciesNames.join(", ").toStdString() << std::endl;
-    qDebug() << "**************************************************";
+    _speciesNames.sort();
+    //std::cout<< "Species names: " << _speciesNames.join(", ").toStdString() << std::endl;
+    //qDebug() << "**************************************************";
 }
 
 void CrossSpeciesComparisonTreeData::setTreeSpeciesNamesRaw(QStringList jsonString)
@@ -154,10 +155,10 @@ void CrossSpeciesComparisonTree::selectInvert()
 
 void CrossSpeciesComparisonTree::setTreeData(QJsonObject jsonString)
 {
-    qDebug() << "%%3ItsSetting3%%";
+    //qDebug() << "%%3ItsSetting3%%";
     getRawData<CrossSpeciesComparisonTreeData>()->setTreeDataRaw(jsonString);
-    qDebug()<< "jsonString"<<jsonString;
-    qDebug() << "%%3ItsSetting3%%";
+    //qDebug()<< "jsonString"<<jsonString;
+    //qDebug() << "%%3ItsSetting3%%";
     //getRawData<CrossSpeciesComparisonTreeData>()->changed();
     events().notifyDatasetDataChanged(this);
 }

@@ -32,9 +32,10 @@ public:
      * @return Smart pointer to dataset
      */
     Dataset<mv::DatasetImpl> createDataSet(const QString& guid = "") const override;
-    void setData(QJsonObject jsonString);
-    QJsonObject& getData();
-    QStringList& getSpeciesNames();
+    void setTreeData(QJsonObject jsonString);
+    void setTreeSpeciesNames(QStringList jsonString);
+    QJsonObject& getTreeData();
+    QStringList& getTreeSpeciesNames();
 
 private:
     QJsonObject _data;
@@ -115,9 +116,10 @@ public: // Selection
 
     /** Invert item selection */
     void selectInvert() override;
-    void setData(QJsonObject jsonString);
-    QJsonObject& getData();
-    QStringList& getSpeciesNames();
+    void setTreeData(QJsonObject jsonString);
+    void setTreeSpeciesNames(QJsonObject jsonString);
+    QJsonObject& getTreeData();
+    QStringList& getTreeSpeciesNames();
     QSharedPointer<InfoAction>      _infoAction;
     std::vector<unsigned int> indices;
 

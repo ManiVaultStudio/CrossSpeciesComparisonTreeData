@@ -39,13 +39,15 @@ InfoAction::InfoAction(QObject* parent, CrossSpeciesComparisonTree& clusters) :
             return;
 
 
-        _treeInfoAction.setString(QJsonDocument(_clusters->getData()).toJson());
-
-      
-
-        QString textleaf = _clusters->getSpeciesNames().join("\n");
+        _treeInfoAction.setString(QJsonDocument(_clusters->getTreeData()).toJson());
+        QString textleaf = _clusters->getTreeSpeciesNames().join("\n");
         _leafInfoAction.setString(textleaf);
 
+        qDebug() << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+
+        qDebug() << QJsonDocument(_clusters->getTreeData()).toJson();
+        qDebug() << "Species names: " << textleaf ;
+        qDebug() << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
 
     };
 

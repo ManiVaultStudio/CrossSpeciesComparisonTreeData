@@ -51,41 +51,7 @@ QStringList getNames(const QJsonObject& root) {
     return names;
 }
 
-QJsonObject sortJsonObject(QJsonObject obj) {
-    if (obj.contains("children")) {
-        QJsonArray childrenArray = obj["children"].toArray();
-        std::vector<QJsonObject> children;
 
-        for (const auto& child : childrenArray) {
-            QJsonObject sortedChild = sortJsonObject(child.toObject());
-            children.push_back(sortedChild);
-        }
-
-        std::sort(children.begin(), children.end(), [](const QJsonObject& a, const QJsonObject& b) {
-            QString aName = a.contains("name") ? a["name"].toString() : "";
-            QString bName = b.contains("name") ? b["name"].toString() : "";
-            if (aName.isEmpty() && bName.isEmpty())
-                return false;
-            else if (aName.isEmpty())
-                return true;
-            else if (bName.isEmpty())
-                return false;
-            else if (aName.at(0) != bName.at(0))
-                return aName.at(0) < bName.at(0); // change here
-            else
-                return aName < bName;
-            });
-
-        QJsonArray sortedChildrenArray;
-        for (const auto& child : children) {
-            sortedChildrenArray.push_back(child);
-        }
-
-        obj["children"] = sortedChildrenArray;
-    }
-
-    return obj;
-}
 
 Dataset<DatasetImpl> CrossSpeciesComparisonTreeData::createDataSet(const QString& guid /*= ""*/) const
 {
@@ -93,22 +59,31 @@ Dataset<DatasetImpl> CrossSpeciesComparisonTreeData::createDataSet(const QString
     return dataset;
 }
 
-void CrossSpeciesComparisonTreeData::setData(QJsonObject jsonString)
+void CrossSpeciesComparisonTreeData::setTreeData(QJsonObject jsonString)
 {
-    sortJsonObject(jsonString);
+    //sortJsonObject(jsonString);
+
+    qDebug() << "**************************************************";
+
     std::cout << QJsonDocument(jsonString).toJson().toStdString() << std::endl;
     _data = jsonString;
     _speciesNames.clear();
     _speciesNames = getNames(_data);
-
+    std::cout<< "Species names: " << _speciesNames.join(", ").toStdString() << std::endl;
+    qDebug() << "**************************************************";
 }
 
-QJsonObject& CrossSpeciesComparisonTreeData::getData()
+void CrossSpeciesComparisonTreeData::setTreeSpeciesNames(QStringList jsonString)
+{
+        _speciesNames = jsonString;
+}
+
+QJsonObject& CrossSpeciesComparisonTreeData::getTreeData()
 {
     return _data;
 }
 
-QStringList& CrossSpeciesComparisonTreeData::getSpeciesNames()
+QStringList& CrossSpeciesComparisonTreeData::getTreeSpeciesNames()
 {
     return _speciesNames;
 }
@@ -177,16 +152,21 @@ void CrossSpeciesComparisonTree::selectInvert()
 {
 }
 
-void CrossSpeciesComparisonTree::setData(QJsonObject jsonString)
+void CrossSpeciesComparisonTree::setTreeData(QJsonObject jsonString)
 {
+    qDebug() << "%%3ItsSetting3%%";
     getRawData<CrossSpeciesComparisonTreeData>()->setData(jsonString);
+    qDebug()<< "jsonString"<<jsonString;
+    qDebug() << "%%3ItsSetting3%%";
+    //getRawData<CrossSpeciesComparisonTreeData>()->changed();
+    events().notifyDatasetDataChanged(this);
 }
-QJsonObject& CrossSpeciesComparisonTree::getData()
+QJsonObject& CrossSpeciesComparisonTree::getTreeData()
 {
-    return  getRawData<CrossSpeciesComparisonTreeData>()->getData();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeData();// TODO: insert return statement here
 }
 
-QStringList& CrossSpeciesComparisonTree::getSpeciesNames()
+QStringList& CrossSpeciesComparisonTree::getTreeSpeciesNames()
 {
-    return  getRawData<CrossSpeciesComparisonTreeData>()->getSpeciesNames();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeSpeciesNames();// TODO: insert return statement here
 }

@@ -160,7 +160,6 @@ void CrossSpeciesComparisonTree::setTreeData(QJsonObject jsonString)
     //qDebug()<< "jsonString"<<jsonString;
     //qDebug() << "%%3ItsSetting3%%";
     //getRawData<CrossSpeciesComparisonTreeData>()->changed();
-    events().notifyDatasetDataChanged(this);
 }
 void CrossSpeciesComparisonTree::setTreeSpeciesNames(QStringList jsonString)
 {

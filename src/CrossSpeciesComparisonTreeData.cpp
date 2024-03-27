@@ -67,16 +67,16 @@ void CrossSpeciesComparisonTreeData::setTreeDataRaw(QJsonObject jsonString)
     
     //qDebug() << "**************************************************";
     _data = jsonString;
-    _speciesNames.clear();
-    _speciesNames = getNames(_data);
-    _speciesNames.sort();
+    _leafNames.clear();
+    _leafNames = getNames(_data);
+    _leafNames.sort();
     //std::cout<< "Species names: " << _speciesNames.join(", ").toStdString() << std::endl;
     //qDebug() << "**************************************************";
 }
 
-void CrossSpeciesComparisonTreeData::setTreeSpeciesNamesRaw(QStringList jsonString)
+void CrossSpeciesComparisonTreeData::setTreeLeafNamesRaw(QStringList jsonString)
 {
-        _speciesNames = jsonString;
+    _leafNames = jsonString;
 }
 
 QJsonObject& CrossSpeciesComparisonTreeData::getTreeDataRaw()
@@ -84,9 +84,9 @@ QJsonObject& CrossSpeciesComparisonTreeData::getTreeDataRaw()
     return _data;
 }
 
-QStringList& CrossSpeciesComparisonTreeData::getTreeSpeciesNamesRaw()
+QStringList& CrossSpeciesComparisonTreeData::getTreeLeafNamesRaw()
 {
-    return _speciesNames;
+    return _leafNames;
 }
 
 QIcon CrossSpeciesComparisonTreeDataFactory::getIcon(const QColor& color /*= Qt::black*/) const
@@ -161,16 +161,16 @@ void CrossSpeciesComparisonTree::setTreeData(QJsonObject jsonString)
     //qDebug() << "%%3ItsSetting3%%";
     //getRawData<CrossSpeciesComparisonTreeData>()->changed();
 }
-void CrossSpeciesComparisonTree::setTreeSpeciesNames(QStringList jsonString)
+void CrossSpeciesComparisonTree::setTreeLeafNames(QStringList jsonString)
 {
-    getRawData<CrossSpeciesComparisonTreeData>()->setTreeSpeciesNamesRaw(jsonString);
+    getRawData<CrossSpeciesComparisonTreeData>()->setTreeLeafNamesRaw(jsonString);
 }
 QJsonObject& CrossSpeciesComparisonTree::getTreeData()
 {
     return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeDataRaw();// TODO: insert return statement here
 }
 
-QStringList& CrossSpeciesComparisonTree::getTreeSpeciesNames()
+QStringList& CrossSpeciesComparisonTree::getTreeLeafNames()
 {
-    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeSpeciesNamesRaw();// TODO: insert return statement here
+    return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeLeafNamesRaw();// TODO: insert return statement here
 }

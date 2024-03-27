@@ -40,7 +40,7 @@ InfoAction::InfoAction(QObject* parent, CrossSpeciesComparisonTree& clusters) :
 
 
         _treeInfoAction.setString(QJsonDocument(_clusters->getTreeData()).toJson());
-        QString textleaf = _clusters->getTreeSpeciesNames().join("\n");
+        QString textleaf = _clusters->getTreeLeafNames().join("\n");
         _leafInfoAction.setString(textleaf);
 
         //qDebug() << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";

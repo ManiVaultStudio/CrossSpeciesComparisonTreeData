@@ -33,13 +33,13 @@ public:
      */
     Dataset<mv::DatasetImpl> createDataSet(const QString& guid = "") const override;
     void setTreeDataRaw(QJsonObject jsonString);
-    void setTreeSpeciesNamesRaw(QStringList jsonString);
+    void setTreeLeafNamesRaw(QStringList jsonString);
     QJsonObject& getTreeDataRaw();
-    QStringList& getTreeSpeciesNamesRaw();
+    QStringList& getTreeLeafNamesRaw();
 
 private:
     QJsonObject _data;
-    QStringList _speciesNames;
+    QStringList _leafNames;
 };
 
 class  CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTree : public mv::DatasetImpl
@@ -117,9 +117,9 @@ public: // Selection
     /** Invert item selection */
     void selectInvert() override;
     void setTreeData(QJsonObject jsonString);
-    void setTreeSpeciesNames(QStringList jsonString);
+    void setTreeLeafNames(QStringList jsonString);
     QJsonObject& getTreeData();
-    QStringList& getTreeSpeciesNames();
+    QStringList& getTreeLeafNames();
     QSharedPointer<InfoAction>      _infoAction;
     std::vector<unsigned int> indices;
 

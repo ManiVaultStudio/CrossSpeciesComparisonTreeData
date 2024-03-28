@@ -174,3 +174,12 @@ QStringList& CrossSpeciesComparisonTree::getTreeLeafNames()
 {
     return  getRawData<CrossSpeciesComparisonTreeData>()->getTreeLeafNamesRaw();// TODO: insert return statement here
 }
+
+void CrossSpeciesComparisonTree::fromVariantMap(const QVariantMap& variantMap)
+{
+}
+
+QVariantMap CrossSpeciesComparisonTree::toVariantMap() const
+{
+    return QVariantMap();
+}

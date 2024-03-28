@@ -120,6 +120,21 @@ public: // Selection
     void setTreeLeafNames(QStringList jsonString);
     QJsonObject& getTreeData();
     QStringList& getTreeLeafNames();
+
+public: // Serialization
+
+    /**
+     * Load widget action from variant
+     * @param Variant representation of the widget action
+     */
+    void fromVariantMap(const QVariantMap& variantMap) override;
+
+    /**
+        * Save widget action to variant
+        * @return Variant representation of the widget action
+        */
+    QVariantMap toVariantMap() const override;
+
     QSharedPointer<InfoAction>      _infoAction;
     std::vector<unsigned int> indices;
 

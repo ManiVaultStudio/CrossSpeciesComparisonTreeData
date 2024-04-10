@@ -26,131 +26,45 @@ CrossSpeciesComparisonTreeData::~CrossSpeciesComparisonTreeData(void)
 
 void CrossSpeciesComparisonTreeData::fromVariantMap(const QVariantMap& variantMap)
 {
-    /*WidgetAction::fromVariantMap(variantMap);
+  /*
+    variantMapMustContain(variantMap, "CrossSpeciesComparisonTreeInfo");
+    variantMapMustContain(variantMap, "LeafInfo");
 
-    const auto dataMap = variantMap["Data"].toMap();
+    const auto data = variantMap["Data"].toMap();
+    const auto numberOfPoints = static_cast<size_t>(variantMap["NumberOfPoints"].toInt());
+    const auto numberOfDimensions = variantMap["NumberOfDimensions"].toUInt();
+    const auto numberOfElements = numberOfPoints * numberOfDimensions;
+    const auto elementTypeIndex = static_cast<PointData::ElementTypeSpecifier>(data["TypeIndex"].toInt());
+    const auto rawData = data["Raw"].toMap();
 
-    variantMapMustContain(dataMap, "IndicesRawData");
-    variantMapMustContain(dataMap, "NumberOfIndices");
 
-    // Packed indices for all clusters
-    QVector<std::uint32_t> packedIndices;
-
-    packedIndices.resize(dataMap["NumberOfIndices"].toInt());
-
-    // Convert raw data to indices
-    populateDataBufferFromVariantMap(dataMap["IndicesRawData"].toMap(), (char*)packedIndices.data());
-
-    if (dataMap.contains("ClustersRawData")) {
-        QByteArray clustersByteArray;
-
-        QDataStream clustersDataStream(&clustersByteArray, QIODevice::ReadOnly);
-
-        const auto clustersRawDataSize = dataMap["ClustersRawDataSize"].toInt();
-
-        clustersByteArray.resize(clustersRawDataSize);
-
-        populateDataBufferFromVariantMap(dataMap["ClustersRawData"].toMap(), (char*)clustersByteArray.data());
-
-        QVariantList clusters;
-
-        clustersDataStream >> clusters;
-
-        _clusters.resize(clusters.count());
-
-        long clusterIndex = 0;
-
-        for (const auto& clusterVariant : clusters) {
-            const auto clusterMap = clusterVariant.toMap();
-
-            auto& cluster = _clusters[clusterIndex];
-
-            cluster.setName(clusterMap["Name"].toString());
-            cluster.setId(clusterMap["ID"].toString());
-            cluster.setColor(clusterMap["Color"].toString());
-
-            const auto globalIndicesOffset = clusterMap["GlobalIndicesOffset"].toInt();
-            const auto numberOfIndices = clusterMap["NumberOfIndices"].toInt();
-
-            cluster.getIndices() = std::vector<std::uint32_t>(packedIndices.begin() + globalIndicesOffset, packedIndices.begin() + globalIndicesOffset + numberOfIndices);
-
-            ++clusterIndex;
-        }
-    }
-
-    // For backwards compatibility
-    if (dataMap.contains("Clusters")) {
-        const auto clustersList = dataMap["Clusters"].toList();
-
-        _clusters.resize(clustersList.count());
-
-        for (const auto& clusterVariant : clustersList) {
-            const auto clusterMap = clusterVariant.toMap();
-            const auto clusterIndex = clustersList.indexOf(clusterMap);
-
-            auto& cluster = _clusters[clusterIndex];
-
-            cluster.setName(clusterMap["Name"].toString());
-            cluster.setId(clusterMap["ID"].toString());
-            cluster.setColor(clusterMap["Color"].toString());
-
-            const auto globalIndicesOffset = clusterMap["GlobalIndicesOffset"].toInt();
-            const auto numberOfIndices = clusterMap["NumberOfIndices"].toInt();
-
-            cluster.getIndices() = std::vector<std::uint32_t>(packedIndices.begin() + globalIndicesOffset, packedIndices.begin() + globalIndicesOffset + numberOfIndices);
-        }
-    }
-    */
+    setElementTypeSpecifier(elementTypeIndex);
+    resizeVector(numberOfElements);
+    populateDataBufferFromVariantMap(rawData, (char*)getDataVoidPtr());
+    _numDimensions = numberOfDimensions;
+*/
 }
 
 QVariantMap CrossSpeciesComparisonTreeData::toVariantMap() const
 {
-    auto variantMap = WidgetAction::toVariantMap();
+    QVariantMap rawData;
     /*
-    std::vector<std::uint32_t> indices;
+    const auto typeSpecifier = getElementTypeSpecifier();
+    const auto typeSpecifierName = getElementTypeNames()[static_cast<std::int32_t>(typeSpecifier)];
+    const auto typeIndex = static_cast<std::int32_t>(typeSpecifier);
+    const auto numberOfElements = getNumberOfElements();
 
-    for (const auto& cluster : _clusters)
-        indices.insert(indices.end(), cluster.getIndices().begin(), cluster.getIndices().end());
+    QVariantMap rawData = rawDataToVariantMap((const char*)getDataConstVoidPtr(), getRawDataSize(), true);
 
-    QVariantMap indicesRawData = rawDataToVariantMap((char*)indices.data(), indices.size() * sizeof(std::uint32_t), true);
+    return {
+        { "TypeIndex", QVariant::fromValue(typeIndex) },
+        { "TypeName", QVariant(typeSpecifierName) },
+        { "Raw", QVariant::fromValue(rawData) },
+        { "NumberOfElements", QVariant::fromValue(numberOfElements) }
+    };
 
-    std::size_t globalIndicesOffset = 0;
-
-    QVariantList clusters;
-
-    clusters.reserve(_clusters.count());
-
-    for (const auto& cluster : _clusters) {
-        const auto numberOfIndicesInCluster = cluster.getIndices().size();
-
-        clusters.push_back(QVariantMap({
-            { "Name", cluster.getName() },
-            { "ID", cluster.getId() },
-            { "Color", cluster.getColor() },
-            { "GlobalIndicesOffset", QVariant::fromValue(globalIndicesOffset) },
-            { "NumberOfIndices", QVariant::fromValue(numberOfIndicesInCluster) }
-            }));
-
-        globalIndicesOffset += numberOfIndicesInCluster;
-    }
-
-    // https://stackoverflow.com/questions/19537186/serializing-qvariant-through-qdatastream
-
-    QByteArray clustersByteArray;
-    QDataStream clustersDataStream(&clustersByteArray, QIODevice::WriteOnly);
-
-    clustersDataStream << clusters;
-
-    QVariantMap clustersRawData = rawDataToVariantMap((char*)clustersByteArray.data(), clustersByteArray.size(), true);
-
-    variantMap.insert({
-        { "ClustersRawData", clustersRawData },
-        { "ClustersRawDataSize", clustersByteArray.size() },
-        { "IndicesRawData", indicesRawData },
-        { "NumberOfIndices", QVariant::fromValue(indices.size()) }
-        });
-        */
-    return variantMap;
+    */
+    return rawData;
 }
 
 void CrossSpeciesComparisonTreeData::init()
@@ -306,20 +220,147 @@ QStringList& CrossSpeciesComparisonTree::getTreeLeafNames()
 
 void CrossSpeciesComparisonTree::fromVariantMap(const QVariantMap& variantMap)
 {
-    DatasetImpl::fromVariantMap(variantMap);
+    /*DatasetImpl::fromVariantMap(variantMap);
 
-    getRawData<CrossSpeciesComparisonTreeData>()->fromVariantMap(variantMap);
+    variantMapMustContain(variantMap, "DimensionNames");
+    variantMapMustContain(variantMap, "Selection");
+
+    // For backwards compatibility, check PluginVersion
+    if (variantMap["PluginVersion"] == "No Version" && !variantMap["Full"].toBool())
+    {
+        makeSubsetOf(getParent()->getFullDataset<mv::DatasetImpl>());
+
+        qWarning() << "[ManiVault deprecation warning]: This project was saved with an older ManiVault version (<1.0). "
+            "Please save the project again to ensure compatibility with newer ManiVault versions. "
+            "Future releases may not be able to load this projects otherwise. ";
+    }
+
+    // Load raw point data
+    if (isFull())
+        getRawData<PointData>()->fromVariantMap(variantMap);
+    else
+    {
+        variantMapMustContain(variantMap, "Indices");
+
+        const auto& indicesMap = variantMap["Indices"].toMap();
+
+        indices.resize(indicesMap["Count"].toInt());
+
+        populateDataBufferFromVariantMap(indicesMap["Raw"].toMap(), (char*)indices.data());
+    }
+
+    // Load dimension names
+    QStringList dimensionNameList;
+    std::vector<QString> dimensionNames;
+
+    // Fetch dimension names from map
+    const auto fetchDimensionNames = [&variantMap]() -> QStringList {
+        QStringList dimensionNames;
+
+        // Dimension names in byte array format
+        QByteArray dimensionsByteArray;
+
+        // Copy the dimension names raw data into the byte array
+        dimensionsByteArray.resize(variantMap["DimensionNames"].toMap()["Size"].value<std::uint64_t>());
+        populateDataBufferFromVariantMap(variantMap["DimensionNames"].toMap(), (char*)dimensionsByteArray.data());
+
+        // Open input data stream
+        QDataStream dimensionsDataStream(&dimensionsByteArray, QIODevice::ReadOnly);
+
+        // Stream the data to the dimension names
+        dimensionsDataStream >> dimensionNames;
+
+        return dimensionNames;
+        };
+
+    if (variantMap["NumberOfDimensions"].toInt() > 1000)
+        dimensionNameList = fetchDimensionNames();
+    else
+        dimensionNameList = variantMap["DimensionNames"].toStringList();
+
+    if (dimensionNameList.size() == getNumDimensions())
+    {
+        for (const auto& dimensionName : dimensionNameList)
+            dimensionNames.push_back(dimensionName);
+    }
+    else
+    {
+        for (std::uint32_t dimensionIndex = 0; dimensionIndex < getNumDimensions(); dimensionIndex++)
+            dimensionNames.emplace_back(QString("Dim %1").arg(QString::number(dimensionIndex)));
+    }
+
+    setDimensionNames(dimensionNames);
+
+    if (variantMap.contains("Dimensions")) {
+        _dimensionsPickerAction->fromParentVariantMap(variantMap);
+    }
 
     events().notifyDatasetDataChanged(this);
-  
+
+    // Handle saved selection
+    if (isFull()) {
+        const auto& selectionMap = variantMap["Selection"].toMap();
+
+        const auto count = selectionMap["Count"].toInt();
+
+        if (count > 0) {
+            auto selectionSet = getSelection<Points>();
+
+            selectionSet->indices.resize(count);
+
+            populateDataBufferFromVariantMap(selectionMap["Raw"].toMap(), (char*)selectionSet->indices.data());
+
+            events().notifyDatasetDataSelectionChanged(this);
+        }
+    }
+  */
 }
 
 QVariantMap CrossSpeciesComparisonTree::toVariantMap() const
 {
+    
+    QVariantMap variantMap;
+    /*
     auto variantMap = DatasetImpl::toVariantMap();
 
-    variantMap["Data"] = getRawData<CrossSpeciesComparisonTreeData>()->toVariantMap();
+    QStringList dimensionNames;
+    QByteArray dimensionsByteArray;
+    QDataStream dimensionsDataStream(&dimensionsByteArray, QIODevice::WriteOnly);
 
+    if (getDimensionNames().size() == getNumDimensions()) {
+        for (const auto& dimensionName : getDimensionNames())
+            dimensionNames << dimensionName;
+    }
+    else {
+        for (std::uint32_t dimensionIndex = 0; dimensionIndex < getNumDimensions(); dimensionIndex++)
+            dimensionNames << QString("Dim %1").arg(QString::number(dimensionIndex));
+    }
+
+    if (dimensionNames.size() > 1000)
+        dimensionsDataStream << dimensionNames;
+
+    QVariantMap indices;
+
+    indices["Count"] = QVariant::fromValue(this->indices.size());
+    indices["Raw"] = rawDataToVariantMap((char*)this->indices.data(), this->indices.size() * sizeof(std::uint32_t), true);
+
+    QVariantMap selection;
+
+    if (isFull()) {
+        auto selectionSet = getSelection<Points>();
+
+        selection["Count"] = QVariant::fromValue(selectionSet->indices.size());
+        selection["Raw"] = rawDataToVariantMap((char*)selectionSet->indices.data(), selectionSet->indices.size() * sizeof(std::uint32_t), true);
+    }
+
+    variantMap["Data"] = isFull() ? getRawData<PointData>()->toVariantMap() : QVariantMap();
+    variantMap["NumberOfPoints"] = getNumPoints();
+    variantMap["Indices"] = indices;
+    variantMap["Selection"] = selection;
+    variantMap["DimensionNames"] = (dimensionNames.size() > 1000) ? rawDataToVariantMap((char*)dimensionsByteArray.data(), dimensionsByteArray.size(), true) : QVariant::fromValue(dimensionNames);
+    variantMap["NumberOfDimensions"] = getNumDimensions();
+    variantMap["Dimensions"] = _dimensionsPickerAction->toVariantMap();
+    */
     return variantMap;
 }
 

@@ -306,20 +306,20 @@ QStringList& CrossSpeciesComparisonTree::getTreeLeafNames()
 
 void CrossSpeciesComparisonTree::fromVariantMap(const QVariantMap& variantMap)
 {
-    /*DatasetImpl::fromVariantMap(variantMap);
+    DatasetImpl::fromVariantMap(variantMap);
 
     getRawData<CrossSpeciesComparisonTreeData>()->fromVariantMap(variantMap);
 
     events().notifyDatasetDataChanged(this);
-    */
+  
 }
 
 QVariantMap CrossSpeciesComparisonTree::toVariantMap() const
 {
     auto variantMap = DatasetImpl::toVariantMap();
-    /*
+
     variantMap["Data"] = getRawData<CrossSpeciesComparisonTreeData>()->toVariantMap();
-    */
+
     return variantMap;
 }
 

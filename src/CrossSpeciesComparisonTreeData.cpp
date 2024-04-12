@@ -24,6 +24,27 @@ CrossSpeciesComparisonTreeData::~CrossSpeciesComparisonTreeData(void)
 
 }
 
+void CrossSpeciesComparisonTreeData::fromVariantMap(const QVariantMap& variantMap)
+{
+    RawData::fromVariantMap(variantMap);
+
+    if (variantMap.contains("CSV:TreeData")) {
+        QJsonDocument doc = QJsonDocument::fromJson(variantMap["CSV:TreeData"].toByteArray());
+        setTreeDataRaw(doc.object());
+    }
+}
+
+QVariantMap CrossSpeciesComparisonTreeData::toVariantMap() const
+{
+    QVariantMap variantMap = RawData::toVariantMap();
+    
+    QJsonDocument doc(_data);
+
+    variantMap["CSV:TreeData"] = doc.toJson();
+
+    return variantMap;
+}
+
 void CrossSpeciesComparisonTreeData::init()
 {
 
@@ -72,6 +93,7 @@ void CrossSpeciesComparisonTreeData::setTreeDataRaw(QJsonObject jsonString)
     _leafNames.sort();
     //std::cout<< "Species names: " << _speciesNames.join(", ").toStdString() << std::endl;
     //qDebug() << "**************************************************";
+
 }
 
 void CrossSpeciesComparisonTreeData::setTreeLeafNamesRaw(QStringList jsonString)
@@ -177,9 +199,20 @@ QStringList& CrossSpeciesComparisonTree::getTreeLeafNames()
 
 void CrossSpeciesComparisonTree::fromVariantMap(const QVariantMap& variantMap)
 {
+    DatasetImpl::fromVariantMap(variantMap);
+
+    getRawData<CrossSpeciesComparisonTreeData>()->fromParentVariantMap(variantMap);
+    events().notifyDatasetDataSelectionChanged(this);
+
+
 }
 
 QVariantMap CrossSpeciesComparisonTree::toVariantMap() const
 {
-    return QVariantMap();
+    auto variantMap = DatasetImpl::toVariantMap();
+
+    getRawData<CrossSpeciesComparisonTreeData>()->insertIntoVariantMap(variantMap);
+
+    return variantMap;
 }
+

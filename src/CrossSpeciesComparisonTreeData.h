@@ -3,7 +3,6 @@
 #include <RawData.h>
 #include <Set.h>
 #include <QJsonObject>
-
 using namespace mv;
 using namespace mv::plugin;
 
@@ -36,7 +35,19 @@ public:
     void setTreeLeafNamesRaw(QStringList jsonString);
     QJsonObject& getTreeDataRaw();
     QStringList& getTreeLeafNamesRaw();
+public: // Serialization
 
+    /**
+     * Load widget action from variant
+     * @param Variant representation of the widget action
+     */
+    void fromVariantMap(const QVariantMap& variantMap) override;
+
+    /**
+     * Save widget action to variant
+     * @return Variant representation of the widget action
+     */
+    QVariantMap toVariantMap() const override;
 private:
     QJsonObject _data;
     QStringList _leafNames;

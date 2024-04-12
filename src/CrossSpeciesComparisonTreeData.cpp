@@ -28,8 +28,8 @@ void CrossSpeciesComparisonTreeData::fromVariantMap(const QVariantMap& variantMa
 {
     RawData::fromVariantMap(variantMap);
 
-    if (variantMap.contains("Data")) {
-        QJsonDocument doc = QJsonDocument::fromJson(variantMap["Data"].toByteArray());
+    if (variantMap.contains("CSV:TreeData")) {
+        QJsonDocument doc = QJsonDocument::fromJson(variantMap["CSV:TreeData"].toByteArray());
         setTreeDataRaw(doc.object());
     }
 }
@@ -40,7 +40,7 @@ QVariantMap CrossSpeciesComparisonTreeData::toVariantMap() const
     
     QJsonDocument doc(_data);
 
-    variantMap["Data"] = doc.toJson();
+    variantMap["CSV:TreeData"] = doc.toJson();
 
     return variantMap;
 }

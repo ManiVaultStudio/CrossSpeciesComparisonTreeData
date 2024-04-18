@@ -35,7 +35,7 @@ void CrossSpeciesComparisonTreeData::fromVariantMap(const QVariantMap& variantMa
 }
 
 QVariantMap CrossSpeciesComparisonTreeData::toVariantMap() const
-{
+{ 
     QVariantMap variantMap = RawData::toVariantMap();
     
     QJsonDocument doc(_data);

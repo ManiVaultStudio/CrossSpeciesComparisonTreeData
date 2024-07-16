@@ -26,8 +26,8 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
 
     name = "CrossSpeciesComparisonTreeData"
     description = """Plugins for reading and writing binary data
-                  in the high-dimensional plugin system (MV)."""
-    topics = ("mv", "plugin", "binary data", "loading", "writing")
+                  in the high-dimensional plugin system (HDPS)."""
+    topics = ("hdps", "plugin", "binary data", "loading", "writing")
     url = "https://github.com/ManiVaultStudio/CrossSpeciesComparisonTreeData"
     author = "B. van Lew b.van_lew@lumc.nl"  # conan recipe author
     license = "MIT"
@@ -40,9 +40,9 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": True, "fPIC": True}
 
-    # Qt requirement is inherited from mv-core
+    # Qt requirement is inherited from hdps-core
 
-    scm = {"type": "git", "subfolder": "mv/CrossSpeciesComparisonTreeData", "url": "auto", "revision": "auto"}
+    scm = {"type": "git", "subfolder": "hdps/CrossSpeciesComparisonTreeData", "url": "auto", "revision": "auto"}
 
     def __get_git_path(self):
         path = load(
@@ -115,17 +115,17 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure(build_script_folder="mv/CrossSpeciesComparisonTreeData")
+        cmake.configure(build_script_folder="hdps/CrossSpeciesComparisonTreeData")
         cmake.verbose = True
         return cmake
 
     def build(self):
         print("Build OS is : ", self.settings.os)
 
-        # The CrossSpeciesComparisonTreeData plugins expect the MV package to be in this install dir
-        mv_pkg_root = self.deps_cpp_info["mv-core"].rootpath
+        # The CrossSpeciesComparisonTreeData plugins expect the HDPS package to be in this install dir
+        hdps_pkg_root = self.deps_cpp_info["hdps-core"].rootpath
         print("Install dir type: ", self.install_dir)
-        shutil.copytree(mv_pkg_root, self.install_dir)
+        shutil.copytree(hdps_pkg_root, self.install_dir)
 
         cmake = self._configure_cmake()
         cmake.build(build_type="Debug")

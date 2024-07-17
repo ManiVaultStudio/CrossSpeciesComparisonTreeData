@@ -172,7 +172,10 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
         # (*.pdb) if building the Visual Studio version
         if self.settings.compiler == "Visual Studio":
             self.copy("*.pdb", dst="Debug/Plugins", keep_path=False)
-
+            
+    def package_id(self):
+        self.info.requires.clear()
+        
     def package_info(self):
         self.cpp_info.debug.libdirs = ["Debug/lib"]
         self.cpp_info.debug.bindirs = ["Debug/Plugins", "Debug"]

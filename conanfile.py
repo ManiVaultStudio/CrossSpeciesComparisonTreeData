@@ -65,9 +65,11 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
         self.version = branch_info.version
 
     def requirements(self):
-        branch_info = PluginBranchInfo(self.__get_git_path())
-        print(f"Core requirement {branch_info.core_requirement}")
-        self.requires(branch_info.core_requirement)
+        if self.__get_git_path() is not None:
+            branch_info = PluginBranchInfo(self.__get_git_path())
+            print(f"Core requirement {branch_info.core_requirement}")
+            self.requires(branch_info.core_requirement)
+            pathlib.Path(pathlib.Path(__file__).parent.resolve(), "__gitpath.txt").unlink(True)
 
     # Remove runtime and use always default (MD/MDd)
     def configure(self):

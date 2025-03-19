@@ -86,13 +86,6 @@ public:
         return mv::data().createSubsetFromSelection(getSelection(), toSmartPointer(), guiName, parentDataSet, visible);
     }
 
-    /**
-     * Get plugin icon
-     * @param color Icon color for flat (font) icons
-     * @return Icon
-     */
-    QIcon getIcon(const QColor& color = Qt::black) const override;
-
 public: // Selection
 
     /**
@@ -165,13 +158,6 @@ class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
 public:
     CrossSpeciesComparisonTreeDataFactory(void) {}
     ~CrossSpeciesComparisonTreeDataFactory(void) override {}
-
-    /**
-     * Get plugin icon
-     * @param color Icon color for flat (font) icons
-     * @return Icon
-     */
-    QIcon getIcon(const QColor& color = Qt::black) const override;
 
     mv::plugin::RawData* produce() override;
 };

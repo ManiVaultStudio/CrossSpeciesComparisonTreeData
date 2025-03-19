@@ -111,9 +111,9 @@ QStringList& CrossSpeciesComparisonTreeData::getTreeLeafNamesRaw()
     return _leafNames;
 }
 
-QIcon CrossSpeciesComparisonTreeDataFactory::getIcon(const QColor& color /*= Qt::black*/) const
+CrossSpeciesComparisonTreeDataFactory::CrossSpeciesComparisonTreeDataFactory() 
 {
-    return Application::getIconFont("FontAwesome").getIcon("sitemap", color);
+    setIconByName("sitemap");
 }
 
 mv::plugin::RawData* CrossSpeciesComparisonTreeDataFactory::produce()
@@ -127,11 +127,6 @@ void CrossSpeciesComparisonTree::init()
 
     addAction(*_infoAction.get());
 
-}
-
-QIcon CrossSpeciesComparisonTree::getIcon(const QColor& color /*= Qt::black*/) const
-{
-    return Application::getIconFont("FontAwesome").getIcon("sitemap", color);
 }
 
 std::vector<std::uint32_t>& CrossSpeciesComparisonTree::getSelectionIndices()

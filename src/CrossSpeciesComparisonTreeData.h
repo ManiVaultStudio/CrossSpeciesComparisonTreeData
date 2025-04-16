@@ -1,5 +1,4 @@
 #pragma once
-#include <QObject>
 #include "crossspeciescomparisontreedata_export.h"
 #include <RawData.h>
 #include <Set.h>
@@ -19,7 +18,6 @@ const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossS
 
 class CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTreeData : public mv::plugin::RawData
 {
-Q_OBJECT
 public:
 
     CrossSpeciesComparisonTreeData(PluginFactory* factory) : mv::plugin::RawData(factory, CrossSpeciesComparisonTreeType) { }
@@ -152,13 +150,14 @@ public: // Serialization
 
 class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
 {
-    Q_OBJECT
-    Q_INTERFACES(mv::plugin::RawDataFactory)
-    Q_INTERFACES(mv::plugin::PluginFactory)
-    Q_PLUGIN_METADATA(IID "nl.BioVault.CrossSpeciesComparisonTreeData" FILE "CrossSpeciesComparisonTreeData.json")
+    Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
+        Q_OBJECT
+        Q_PLUGIN_METADATA(IID   "nl.BioVault.CrossSpeciesComparisonTreeData"
+            FILE  "CrossSpeciesComparisonTreeData.json")
 
 public:
     CrossSpeciesComparisonTreeDataFactory(void);
     ~CrossSpeciesComparisonTreeDataFactory(void) override {}
+
     mv::plugin::RawData* produce() override;
 };

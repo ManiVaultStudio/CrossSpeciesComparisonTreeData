@@ -25,7 +25,7 @@ endif(MSVC)
 # Dependencies
 # -----------------------------------------------------------------------------
 find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
-find_package(ManiVault COMPONENTS Core PointData ClusterData CONFIG QUIET)
+find_package(ManiVault COMPONENTS Core CONFIG QUIET)
 
 # -----------------------------------------------------------------------------
 # Source files
@@ -55,7 +55,7 @@ add_library(${PROJECT_NAME} SHARED
 # -----------------------------------------------------------------------------
 # Target include directories
 # -----------------------------------------------------------------------------
-target_include_directories(${PROJECT_NAME} PRIVATE "${MV_INSTALL_DIR}/$<CONFIGURATION>/include/")
+target_include_directories(${PROJECT_NAME} PRIVATE "${MV_INSTALL_DIR}")
 
 # -----------------------------------------------------------------------------
 # Target properties

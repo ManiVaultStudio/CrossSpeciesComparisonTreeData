@@ -60,10 +60,10 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Generate a header file that contains the EXPORT macro for this library.
-generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_export.h)
+generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/CrossSpeciesComparisonTreeData_export.h)
 
 # Add the generated header to the plugin's header files
-list(APPEND PLUGIN_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_export.h)
+list(APPEND PLUGIN_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/$CrossSpeciesComparisonTreeData_export.h)
 
 # -----------------------------------------------------------------------------
 # Target include directories

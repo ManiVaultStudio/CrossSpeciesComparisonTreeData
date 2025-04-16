@@ -25,43 +25,42 @@ endif(MSVC)
 # Dependencies
 # -----------------------------------------------------------------------------
 find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
-
 find_package(ManiVault COMPONENTS Core PointData ClusterData CONFIG QUIET)
 
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
-# Define the plugin sources
 set(CROSSSPECIESCOMPARISONTREEDATA_SOURCES
     src/CrossSpeciesComparisonTreeData.h
     src/CrossSpeciesComparisonTreeData.cpp
     src/CrossSpeciesComparisonTreeData.json
-	src/InfoAction.h
-	src/InfoAction.cpp
+    src/InfoAction.h
+    src/InfoAction.cpp
 )
 
 set(Tree_DATA_HEADERS
     src/CrossSpeciesComparisonTreeData.h
 )
 
-source_group( Plugin FILES ${CROSSSPECIESCOMPARISONTREEDATA_SOURCES})
+source_group(Plugin FILES ${CROSSSPECIESCOMPARISONTREEDATA_SOURCES})
 
-qt_wrap_cpp(CROSSSPECIESCOMPARISONTREEDATA_MOC ${Tree_DATA_HEADERS} TARGET ${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${CROSSSPECIESCOMPARISONTREEDATA_MOC})
- 
- 
 # -----------------------------------------------------------------------------
 # CMake Target
 # -----------------------------------------------------------------------------
-# Create dynamic library for the plugin
+# Create dynamic library for the plugin FIRST
 add_library(${PROJECT_NAME} SHARED 
     ${CROSSSPECIESCOMPARISONTREEDATA_SOURCES} 
 )
+
+# Then add MOC sources to the existing target
+qt_wrap_cpp(CROSSSPECIESCOMPARISONTREEDATA_MOC ${Tree_DATA_HEADERS} TARGET ${PROJECT_NAME})
+target_sources(${PROJECT_NAME} PRIVATE ${CROSSSPECIESCOMPARISONTREEDATA_MOC})
+
 # -----------------------------------------------------------------------------
 # Target include directories
 # -----------------------------------------------------------------------------
-# Include ManiVault headers, including system data plugins
 target_include_directories(${PROJECT_NAME} PRIVATE "${MV_INSTALL_DIR}/$<CONFIGURATION>/include/")
+
 # -----------------------------------------------------------------------------
 # Target properties
 # -----------------------------------------------------------------------------
@@ -72,17 +71,18 @@ set_target_properties(${PROJECT_NAME}
     FOLDER DataPlugins
 )
 
-# Generate a header file that contains the EXPORT macro for this library.
- include(GenerateExportHeader)
- generate_export_header(${PROJECT_NAME})
- 
- # Retrieve the file name of the generated export header.
- file(GLOB EXPORT_HEADER_FILE_NAME
-     RELATIVE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/*_export.h)
- list(APPEND Tree_DATA_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_HEADER_FILE_NAME})
- 
- set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${Tree_DATA_HEADERS}")
+# Generate export header
+include(GenerateExportHeader)
+generate_export_header(${PROJECT_NAME})
 
+# Retrieve the file name of the generated export header
+file(GLOB EXPORT_HEADER_FILE_NAME
+    RELATIVE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/*_export.h)
+list(APPEND Tree_DATA_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_HEADER_FILE_NAME})
+
+# Set PUBLIC_HEADER property and install headers
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${Tree_DATA_HEADERS}")
+install(FILES ${Tree_DATA_HEADERS} DESTINATION include)  # Add this to fix the warning
 
 # Enable unity build
 if(MV_UNITY_BUILD)
@@ -92,22 +92,22 @@ endif()
 # -----------------------------------------------------------------------------
 # Target library linking
 # -----------------------------------------------------------------------------
-# Link to Qt libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::WebEngineWidgets)
-
-# Link to ManiVault and data plugins
-target_link_libraries(${PROJECT_NAME} PRIVATE ManiVault::Core)
-target_link_libraries(${PROJECT_NAME} PRIVATE ManiVault::PointData)
-target_link_libraries(${PROJECT_NAME} PRIVATE ManiVault::ClusterData)
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    Qt6::Widgets 
+    Qt6::WebEngineWidgets
+    ManiVault::Core
+    ManiVault::PointData
+    ManiVault::ClusterData
+)
 
 # -----------------------------------------------------------------------------
 # Target installation
 # -----------------------------------------------------------------------------
-# Install the shared plugin library to the "Plugins" folder in the ManiVault install directory
 install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION Plugins COMPONENT PLUGINS # Windows .dll
-    LIBRARY DESTINATION Plugins COMPONENT PLUGINS # Linux/Mac .so
+    RUNTIME DESTINATION Plugins COMPONENT PLUGINS
+    LIBRARY DESTINATION Plugins COMPONENT PLUGINS
+    ARCHIVE DESTINATION Plugins COMPONENT PLUGINS
+    PUBLIC_HEADER DESTINATION include  # Add this to fix the warning
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
@@ -120,7 +120,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 # -----------------------------------------------------------------------------
 # Miscellaneous
 # -----------------------------------------------------------------------------
-# Automatically set the debug environment (command + working directory) for MSVC
 if(MSVC)
     set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<IF:$<CONFIG:DEBUG>,${ManiVault_INSTALL_DIR}/debug,${ManiVault_INSTALL_DIR}/release>)
     set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_COMMAND $<IF:$<CONFIG:DEBUG>,${ManiVault_INSTALL_DIR}/debug/ManiVault\ Studio.exe,${ManiVault_INSTALL_DIR}/release/ManiVault\ Studio.exe>)

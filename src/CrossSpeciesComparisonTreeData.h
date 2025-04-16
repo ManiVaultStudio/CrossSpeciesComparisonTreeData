@@ -2,6 +2,7 @@
 #include "crossspeciescomparisontreedata_export.h"
 #include <RawData.h>
 #include <Set.h>
+#include <QObject>
 #include <QJsonObject>
 using namespace mv;
 using namespace mv::plugin;
@@ -18,6 +19,7 @@ const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossS
 
 class CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTreeData : public mv::plugin::RawData
 {
+Q_OBJECT
 public:
 
     CrossSpeciesComparisonTreeData(PluginFactory* factory) : mv::plugin::RawData(factory, CrossSpeciesComparisonTreeType) { }
@@ -150,8 +152,9 @@ public: // Serialization
 
 class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
 {
-    Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
-        Q_OBJECT
+Q_OBJECT    
+Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
+
         Q_PLUGIN_METADATA(IID   "nl.BioVault.CrossSpeciesComparisonTreeData"
             FILE  "CrossSpeciesComparisonTreeData.json")
 

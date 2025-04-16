@@ -96,8 +96,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Widgets 
     Qt6::WebEngineWidgets
     ManiVault::Core
-    ManiVault::PointData
-    ManiVault::ClusterData
 )
 
 # -----------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 #pragma once
+#include <QObject>
 #include "crossspeciescomparisontreedata_export.h"
 #include <RawData.h>
 #include <Set.h>
-#include <QObject>
 #include <QJsonObject>
 using namespace mv;
 using namespace mv::plugin;

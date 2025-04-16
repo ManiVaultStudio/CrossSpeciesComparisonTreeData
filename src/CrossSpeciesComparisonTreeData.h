@@ -152,15 +152,13 @@ public: // Serialization
 
 class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
 {
-Q_OBJECT    
-Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
-
-        Q_PLUGIN_METADATA(IID   "nl.BioVault.CrossSpeciesComparisonTreeData"
-            FILE  "CrossSpeciesComparisonTreeData.json")
+    Q_OBJECT
+    Q_INTERFACES(mv::plugin::RawDataFactory)
+    Q_INTERFACES(mv::plugin::PluginFactory)
+    Q_PLUGIN_METADATA(IID "nl.BioVault.CrossSpeciesComparisonTreeData" FILE "CrossSpeciesComparisonTreeData.json")
 
 public:
     CrossSpeciesComparisonTreeDataFactory(void);
     ~CrossSpeciesComparisonTreeDataFactory(void) override {}
-
     mv::plugin::RawData* produce() override;
 };

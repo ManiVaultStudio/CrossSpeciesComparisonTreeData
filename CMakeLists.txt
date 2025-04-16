@@ -52,10 +52,6 @@ add_library(${PROJECT_NAME} SHARED
     ${CROSSSPECIESCOMPARISONTREEDATA_SOURCES} 
 )
 
-# Then add MOC sources to the existing target
-qt_wrap_cpp(CROSSSPECIESCOMPARISONTREEDATA_MOC ${Tree_DATA_HEADERS} TARGET ${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${CROSSSPECIESCOMPARISONTREEDATA_MOC})
-
 # -----------------------------------------------------------------------------
 # Target include directories
 # -----------------------------------------------------------------------------

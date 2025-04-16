@@ -32,11 +32,6 @@ find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 find_package(ManiVault COMPONENTS Core CONFIG QUIET)
 
 # -----------------------------------------------------------------------------
-# Include Common directory
-# -----------------------------------------------------------------------------
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Common ${CMAKE_CURRENT_BINARY_DIR}/Common)
-
-# -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
 # Define the plugin sources

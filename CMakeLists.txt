@@ -47,8 +47,7 @@ set(Tree_DATA_HEADERS
 source_group( Plugin FILES ${CROSSSPECIESCOMPARISONTREEDATA_SOURCES})
 
 qt_wrap_cpp(CROSSSPECIESCOMPARISONTREEDATA_MOC ${Tree_DATA_HEADERS} TARGET ${PROJECT_NAME})
- )
- target_sources(${PROJECT_NAME} PRIVATE ${CROSSSPECIESCOMPARISONTREEDATA_MOC})
+target_sources(${PROJECT_NAME} PRIVATE ${CROSSSPECIESCOMPARISONTREEDATA_MOC})
  
  
 # -----------------------------------------------------------------------------

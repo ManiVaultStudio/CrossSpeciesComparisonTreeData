@@ -29,7 +29,7 @@ include(GenerateExportHeader)
 # -----------------------------------------------------------------------------
 find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 
-find_package(ManiVault COMPONENTS Core PointData CONFIG QUIET)
+find_package(ManiVault COMPONENTS Core CONFIG QUIET)
 
 # -----------------------------------------------------------------------------
 # Include Common directory

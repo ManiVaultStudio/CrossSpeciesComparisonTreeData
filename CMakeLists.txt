@@ -36,12 +36,12 @@ find_package(ManiVault COMPONENTS Core CONFIG REQUIRED)
 set(PLUGIN_SOURCES
     src/CrossSpeciesComparisonTreeData.cpp
     src/InfoAction.cpp
+    src/CrossSpeciesComparisonTreeData.json
 )
 
 set(PLUGIN_HEADERS
     src/CrossSpeciesComparisonTreeData.h
     src/InfoAction.h
-    src/CrossSpeciesComparisonTreeData.json
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})

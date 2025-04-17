@@ -51,27 +51,37 @@ source_group("Header Files" FILES ${PLUGIN_HEADERS})
 add_library(${PLUGIN_NAME} SHARED ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})
 add_library(ManiVault::${PLUGIN_NAME} ALIAS ${PLUGIN_NAME})
 
-# Export header
+# -------------------------------------------------------------------------------
+# Export header generation
+# -------------------------------------------------------------------------------
 include(GenerateExportHeader)
-generate_export_header(${PLUGIN_NAME})
+generate_export_header(${PLUGIN_NAME}
+    BASE_NAME ${PLUGIN_NAME}
+    EXPORT_MACRO_NAME "${PLUGIN_NAME}_EXPORT"
+    EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_export.h"
+)
 
-file(GLOB EXPORT_HEADER_FILE_NAME
-    RELATIVE ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/*_export.h)
-
-list(APPEND PLUGIN_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_HEADER_FILE_NAME})
+# Add the generated export header to the headers list
+list(APPEND PLUGIN_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_export.h")
 
 # -------------------------------------------------------------------------------
 # Includes & Features
 # -------------------------------------------------------------------------------
-target_include_directories(${PLUGIN_NAME} PRIVATE "${ManiVault_INCLUDE_DIR}")
+target_include_directories(${PLUGIN_NAME}
+    PRIVATE
+        "${CMAKE_CURRENT_BINARY_DIR}"       # <-- include generated *_export.h
+        "${ManiVault_INCLUDE_DIR}"
+)
+
 target_compile_features(${PLUGIN_NAME} PRIVATE cxx_std_20)
 
 # -------------------------------------------------------------------------------
 # Link Libraries
 # -------------------------------------------------------------------------------
-target_link_libraries(${PLUGIN_NAME} PRIVATE Qt6::Widgets Qt6::WebEngineWidgets)
-target_link_libraries(${PLUGIN_NAME} PRIVATE ManiVault::Core)
+target_link_libraries(${PLUGIN_NAME}
+    PRIVATE Qt6::Widgets Qt6::WebEngineWidgets
+    PRIVATE ManiVault::Core
+)
 
 # -------------------------------------------------------------------------------
 # Unity Build (optional)
@@ -107,6 +117,23 @@ add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
 # MSVC Debug Configuration
 # -------------------------------------------------------------------------------
 if(MSVC)
-    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<IF:$<CONFIG:DEBUG>,${ManiVault_INSTALL_DIR}/Debug,$<IF:$<CONFIG:RELWITHDEBINFO>,${ManiVault_INSTALL_DIR}/RelWithDebInfo,${ManiVault_INSTALL_DIR}/Release>>)
-    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_COMMAND $<IF:$<CONFIG:DEBUG>,"${ManiVault_INSTALL_DIR}/Debug/ManiVault Studio.exe",$<IF:$<CONFIG:RELWITHDEBINFO>,"${ManiVault_INSTALL_DIR}/RelWithDebInfo/ManiVault Studio.exe","${ManiVault_INSTALL_DIR}/Release/ManiVault Studio.exe">>)
+    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
+        $<IF:$<CONFIG:DEBUG>,
+            ${ManiVault_INSTALL_DIR}/Debug,
+            $<IF:$<CONFIG:RELWITHDEBINFO>,
+                ${ManiVault_INSTALL_DIR}/RelWithDebInfo,
+                ${ManiVault_INSTALL_DIR}/Release
+            >
+        >
+    )
+
+    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_COMMAND
+        $<IF:$<CONFIG:DEBUG>,
+            "${ManiVault_INSTALL_DIR}/Debug/ManiVault Studio.exe",
+            $<IF:$<CONFIG:RELWITHDEBINFO>,
+                "${ManiVault_INSTALL_DIR}/RelWithDebInfo/ManiVault Studio.exe",
+                "${ManiVault_INSTALL_DIR}/Release/ManiVault Studio.exe"
+            >
+        >
+    )
 endif()

@@ -6,8 +6,9 @@ import pathlib
 import subprocess
 from rules_support import PluginBranchInfo
 
+
 class CrossSpeciesComparisonTreeDataConan(ConanFile):
-    """Class to package CrossSpeciesComparisonTreeData plugin using conan
+    """Class to package plugin using conan
 
     Packages both RELEASE and RELWITHDEBINFO.
     Uses rules_support (github.com/ManiVaultStudio/rulessupport) to derive
@@ -16,11 +17,11 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
     """
 
     name = "CrossSpeciesComparisonTreeData"
-    description = ("A plugin for data heat-maps in ManiVault.")
-    topics = ("hdps", "ManiVault", "plugin", "CrossSpeciesComparisonTreeData", "data visualization")
+    description = """Data plugin that stores cell morphology based on the .swc format."""
+    topics = ("manivault", "plugin", "data", "morphology")
     url = "https://github.com/ManiVaultStudio/CrossSpeciesComparisonTreeData"
-    author = "B. van Lew b.van_lew@lumc.nl"  # conan recipe author
-    license = "MIT"
+    author = "julianthijssen@gmail.com"  # conan recipe author
+    license = "LGPL 3.0"
 
     short_paths = True
     generators = "CMakeDeps"
@@ -30,6 +31,8 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": True, "fPIC": True}
 
+    # Qt requirement is inherited from hdps-core
+
     scm = {
         "type": "git",
         "subfolder": "hdps/CrossSpeciesComparisonTreeData",
@@ -38,11 +41,16 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
     }
 
     def __get_git_path(self):
-        path = load(
-            pathlib.Path(pathlib.Path(__file__).parent.resolve(), "__gitpath.txt")
-        )
-        print(f"git info from {path}")
-        return path
+        # When loaded as a dependency there is no mechanism 
+        # for determining the core version because the __gitpath.txt 
+        # was created for the top level requiree and does not exist on this path
+        if pathlib.Path(pathlib.Path(__file__).parent.resolve(), "__gitpath.txt").exists():
+            path = load(
+                pathlib.Path(pathlib.Path(__file__).parent.resolve(), "__gitpath.txt")
+            )
+            print(f"git info from {path}")
+            return path
+        return None
 
     def export(self):
         print("In export")
@@ -56,13 +64,15 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
         # Assign a version from the branch name
         branch_info = PluginBranchInfo(self.recipe_folder)
         self.version = branch_info.version
+        # print(f"Got version: {self.version}")
 
     def requirements(self):
-        branch_info = PluginBranchInfo(self.__get_git_path())
-        print(f"Core requirement {branch_info.core_requirement}")
-        self.requires(branch_info.core_requirement)
+        if self.__get_git_path() is not None:
+            branch_info = PluginBranchInfo(self.__get_git_path())
+            print(f"Core requirement {branch_info.core_requirement}")
+            self.requires(branch_info.core_requirement)
+            pathlib.Path(pathlib.Path(__file__).parent.resolve(), "__gitpath.txt").unlink(True)
 
-    # Remove runtime and use always default (MD/MDd)
     def configure(self):
         pass
 
@@ -97,6 +107,9 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
         manivault_dir = pathlib.Path(mv_core_root, "cmake", "mv").as_posix()
         print("ManiVault_DIR: ", manivault_dir)
         tc.variables["ManiVault_DIR"] = manivault_dir
+
+        # Set some build options
+        tc.variables["MV_UNITY_BUILD"] = "ON"
 
         tc.generate()
 
@@ -141,6 +154,9 @@ class CrossSpeciesComparisonTreeDataConan(ConanFile):
             ]
         )
         self.copy(pattern="*", src=package_dir)
+
+    def package_id(self):
+        self.info.requires.clear()
 
     def package_info(self):
         self.cpp_info.relwithdebinfo.libdirs = ["RelWithDebInfo/lib"]

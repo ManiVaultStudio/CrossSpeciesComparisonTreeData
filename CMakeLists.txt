@@ -6,7 +6,7 @@ option(MV_UNITY_BUILD "Combine target source files into batches for faster compi
 # Project Setup
 # -------------------------------------------------------------------------------
 set(PLUGIN_NAME "CrossSpeciesComparisonTreeData")
-project(${PLUGIN_NAME})
+project(${PLUGIN_NAME} VERSION 1.0 LANGUAGES CXX)
 
 # -------------------------------------------------------------------------------
 # CMake Setup
@@ -16,17 +16,23 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWIN32 /EHsc /MP /permissive- /Zc:__cplusplus")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MD")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+    add_compile_options(
+        /DWIN32
+        /EHsc
+        /MP
+        /permissive-
+        /Zc:__cplusplus
+    )
+    
+    # Use generator expressions for configuration-specific settings
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 # -------------------------------------------------------------------------------
 # Dependencies
 # -------------------------------------------------------------------------------
 find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
-find_package(ManiVault COMPONENTS Core CONFIG QUIET)
+find_package(ManiVault COMPONENTS Core CONFIG REQUIRED)  # Changed from QUIET to REQUIRED
 
 # -------------------------------------------------------------------------------
 # Sources & Headers
@@ -42,8 +48,7 @@ set(PLUGIN_HEADERS
     src/CrossSpeciesComparisonTreeData.json
 )
 
-source_group("Source Files" FILES ${PLUGIN_SOURCES})
-source_group("Header Files" FILES ${PLUGIN_HEADERS})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})
 
 # -------------------------------------------------------------------------------
 # Target Definition
@@ -51,36 +56,30 @@ source_group("Header Files" FILES ${PLUGIN_HEADERS})
 add_library(${PLUGIN_NAME} SHARED ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})
 add_library(ManiVault::${PLUGIN_NAME} ALIAS ${PLUGIN_NAME})
 
-# -------------------------------------------------------------------------------
-# Export header generation
-# -------------------------------------------------------------------------------
+# Export header
 include(GenerateExportHeader)
 generate_export_header(${PLUGIN_NAME}
-    BASE_NAME ${PLUGIN_NAME}
-    EXPORT_MACRO_NAME "${PLUGIN_NAME}_EXPORT"
-    EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_export.h"
+    BASE_NAME CrossSpeciesComparisonTreeData
+    EXPORT_MACRO_NAME CROSSSPECIESCOMPARISONTREEDATA_EXPORT
+    EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/CrossSpeciesComparisonTreeData_export.h"
 )
 
-# Add the generated export header to the headers list
-list(APPEND PLUGIN_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_export.h")
+list(APPEND PLUGIN_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/CrossSpeciesComparisonTreeData_export.h")
 
 # -------------------------------------------------------------------------------
-# Includes & Features
+# Target Properties
 # -------------------------------------------------------------------------------
-target_include_directories(${PLUGIN_NAME}
-    PRIVATE
-        "${CMAKE_CURRENT_BINARY_DIR}"       # <-- include generated *_export.h
-        "${ManiVault_INCLUDE_DIR}"
+target_include_directories(${PLUGIN_NAME} PRIVATE 
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${ManiVault_INCLUDE_DIR}
 )
 
 target_compile_features(${PLUGIN_NAME} PRIVATE cxx_std_20)
 
-# -------------------------------------------------------------------------------
-# Link Libraries
-# -------------------------------------------------------------------------------
-target_link_libraries(${PLUGIN_NAME}
-    PRIVATE Qt6::Widgets Qt6::WebEngineWidgets
-    PRIVATE ManiVault::Core
+target_link_libraries(${PLUGIN_NAME} PRIVATE 
+    Qt6::Widgets 
+    Qt6::WebEngineWidgets
+    ManiVault::Core
 )
 
 # -------------------------------------------------------------------------------
@@ -93,6 +92,8 @@ endif()
 # -------------------------------------------------------------------------------
 # Install
 # -------------------------------------------------------------------------------
+include(GNUInstallDirs)
+
 set_target_properties(${PLUGIN_NAME} PROPERTIES
     PUBLIC_HEADER "${PLUGIN_HEADERS}"
     AUTOMOC ON
@@ -100,40 +101,21 @@ set_target_properties(${PLUGIN_NAME} PROPERTIES
 
 install(TARGETS ${PLUGIN_NAME}
     EXPORT ManiVaultPublicExport
-    RUNTIME DESTINATION "$<CONFIGURATION>/Plugins/" COMPONENT PLUGINS
-    LIBRARY DESTINATION "$<CONFIGURATION>/Plugins/" COMPONENT PLUGINS
-    ARCHIVE DESTINATION "$<CONFIGURATION>/lib/"     COMPONENT LINKLIB
-    PUBLIC_HEADER DESTINATION "$<CONFIGURATION>/include/${PLUGIN_NAME}/" COMPONENT HEADERS
-)
-
-add_custom_command(TARGET ${PLUGIN_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND}
-        --install ${CMAKE_CURRENT_BINARY_DIR}
-        --config $<CONFIGURATION>
-        --prefix ${ManiVault_INSTALL_DIR}
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/Plugins"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/Plugins"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PLUGIN_NAME}"
 )
 
 # -------------------------------------------------------------------------------
 # MSVC Debug Configuration
 # -------------------------------------------------------------------------------
 if(MSVC)
-    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY
-        $<IF:$<CONFIG:DEBUG>,
-            ${ManiVault_INSTALL_DIR}/Debug,
-            $<IF:$<CONFIG:RELWITHDEBINFO>,
-                ${ManiVault_INSTALL_DIR}/RelWithDebInfo,
-                ${ManiVault_INSTALL_DIR}/Release
-            >
-        >
-    )
-
-    set_property(TARGET ${PLUGIN_NAME} PROPERTY VS_DEBUGGER_COMMAND
-        $<IF:$<CONFIG:DEBUG>,
-            "${ManiVault_INSTALL_DIR}/Debug/ManiVault Studio.exe",
-            $<IF:$<CONFIG:RELWITHDEBINFO>,
-                "${ManiVault_INSTALL_DIR}/RelWithDebInfo/ManiVault Studio.exe",
-                "${ManiVault_INSTALL_DIR}/Release/ManiVault Studio.exe"
-            >
-        >
-    )
+    # Simplified debugger configuration
+    set(MV_STUDIO_EXECUTABLE "$<IF:$<CONFIG:Debug>,${ManiVault_INSTALL_DIR}/Debug/ManiVault Studio.exe,${ManiVault_INSTALL_DIR}/Release/ManiVault Studio.exe>")
+    
+    set_property(TARGET ${PLUGIN_NAME} PROPERTY 
+        VS_DEBUGGER_WORKING_DIRECTORY "${ManiVault_INSTALL_DIR}/$<CONFIG>")
+    set_property(TARGET ${PLUGIN_NAME} PROPERTY 
+        VS_DEBUGGER_COMMAND "${MV_STUDIO_EXECUTABLE}")
 endif()

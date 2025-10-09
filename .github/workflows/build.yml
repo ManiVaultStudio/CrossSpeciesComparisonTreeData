@@ -109,10 +109,3 @@ jobs:
 
       - name: Install sentry-tools
         run: pip install git+https://github.com/your-org/sentry-tools.git@v1.0.0
-
-      - name: Upload PDBs to Sentry
-        if: startsWith(runner.os, 'Windows')
-        run: |
-          sentry-upload \
-            --paths "bin/Release/**/*.pdb" "lib/Release/**/*.pdb" \
-            --release "${{ github.ref_name }}"

@@ -106,3 +106,13 @@ jobs:
           conan-user: ${{secrets.LKEB_UPLOAD_USER}}
           conan-password: ${{secrets.LKEB_UPLOAD_USER_PASSWORD}}
           conan-pem: ${{secrets.LKEB_UPLOAD_CERT_CHAIN}}
+
+      - name: Install sentry-tools
+        run: pip install git+https://github.com/your-org/sentry-tools.git@v1.0.0
+
+      - name: Upload PDBs to Sentry
+        if: startsWith(runner.os, 'Windows')
+        run: |
+          sentry-upload \
+            --paths "bin/Release/**/*.pdb" "lib/Release/**/*.pdb" \
+            --release "${{ github.ref_name }}"

@@ -21,7 +21,7 @@ class XSCTreeDataConan(ConanFile):
     description = """Data plugin that stores cell morphology based on the .swc format."""
     topics = ("manivault", "plugin", "data", "morphology")
     url = "https://github.com/ManiVaultStudio/XSCTreeData"
-    author = "julianthijssen@gmail.com"  # conan recipe author
+    author = "sbasu"  # conan recipe author
     license = "LGPL 3.0"
 
     short_paths = True

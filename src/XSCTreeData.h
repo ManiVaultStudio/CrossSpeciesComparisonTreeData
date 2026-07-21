@@ -1,5 +1,5 @@
 #pragma once
-#include "CrossSpeciesComparisonTreeData_export.h"
+#include "XSCTreeData_export.h"
 #include <RawData.h>
 #include <Set.h>
 #include <QJsonObject>
@@ -10,18 +10,18 @@ using namespace mv::plugin;
 // Data Type
 // =============================================================================
 class InfoAction;
-const mv::DataType CrossSpeciesComparisonTreeType = mv::DataType(QString("CrossSpeciesComparisonTree"));
+const mv::DataType XSCTreeType = mv::DataType(QString("XSCTree"));
 
 // =============================================================================
 // Raw Data
 // =============================================================================
 
-class CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTreeData : public mv::plugin::RawData
+class XSCTREEDATA_EXPORT XSCTreeData : public mv::plugin::RawData
 {
 public:
 
-    CrossSpeciesComparisonTreeData(PluginFactory* factory) : mv::plugin::RawData(factory, CrossSpeciesComparisonTreeType) { }
-    ~CrossSpeciesComparisonTreeData(void) override;
+    XSCTreeData(PluginFactory* factory) : mv::plugin::RawData(factory, XSCTreeType) { }
+    ~XSCTreeData(void) override;
 
     void init() override;
 
@@ -53,20 +53,20 @@ private:
     QStringList _leafNames;
 };
 
-class  CROSSSPECIESCOMPARISONTREEDATA_EXPORT CrossSpeciesComparisonTree : public mv::DatasetImpl
+class  XSCTREEDATA_EXPORT XSCTree : public mv::DatasetImpl
 {
 public:
-    CrossSpeciesComparisonTree(QString dataName, bool mayUnderive = true, const QString& guid = "") :
+    XSCTree(QString dataName, bool mayUnderive = true, const QString& guid = "") :
         mv::DatasetImpl(dataName, mayUnderive, guid)
     {
         
     }
 
-    ~CrossSpeciesComparisonTree() override { }
+    ~XSCTree() override { }
     void init() override;
     Dataset<mv::DatasetImpl> copy() const override
     {
-        auto text = new CrossSpeciesComparisonTree(getRawDataName());
+        auto text = new XSCTree(getRawDataName());
 
         text->setText(this->text());
         text->indices = indices;
@@ -148,16 +148,16 @@ public: // Serialization
 // Factory
 // =============================================================================
 
-class CrossSpeciesComparisonTreeDataFactory : public RawDataFactory
+class XSCTreeDataFactory : public RawDataFactory
 {
     Q_INTERFACES(mv::plugin::RawDataFactory mv::plugin::PluginFactory)
         Q_OBJECT
-        Q_PLUGIN_METADATA(IID   "nl.BioVault.CrossSpeciesComparisonTreeData"
-            FILE  "CrossSpeciesComparisonTreeData.json")
+        Q_PLUGIN_METADATA(IID   "nl.BioVault.XSCTreeData"
+            FILE  "XSCTreeData.json")
 
 public:
-    CrossSpeciesComparisonTreeDataFactory(void);
-    ~CrossSpeciesComparisonTreeDataFactory(void) override {}
+    XSCTreeDataFactory(void);
+    ~XSCTreeDataFactory(void) override {}
 
     mv::plugin::RawData* produce() override;
 };

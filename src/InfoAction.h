@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Dataset.h"
-#include "CrossSpeciesComparisonTreeData.h"
+#include "XSCTreeData.h"
 
 
 #include "actions/StringAction.h"
@@ -23,7 +23,7 @@ class InfoAction : public GroupAction
 public:
 
 
-    InfoAction(QObject* parent, CrossSpeciesComparisonTree& clusters);
+    InfoAction(QObject* parent, XSCTree& clusters);
 
 public: // Action getters
 
@@ -31,7 +31,7 @@ public: // Action getters
     StringAction& getLeafInfoAction() { return _leafInfoAction; }
 
 protected:
-    Dataset<CrossSpeciesComparisonTree>       _clusters;                  /** Clusters dataset smart pointer */
+    Dataset<XSCTree>       _clusters;                  /** Clusters dataset smart pointer */
     StringAction    _treeInfoAction;
     StringAction    _leafInfoAction;
 

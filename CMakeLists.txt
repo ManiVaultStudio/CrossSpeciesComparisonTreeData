@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 
 # -----------------------------------------------------------------------------
-# CrossSpeciesComparisonTreeData Plugin
+# XSCTreeData Plugin
 # -----------------------------------------------------------------------------
-PROJECT("CrossSpeciesComparisonTreeData")
+PROJECT("XSCTreeData")
 
 # -----------------------------------------------------------------------------
 # CMake Options
@@ -34,13 +34,13 @@ find_package(ManiVault COMPONENTS Core CONFIG QUIET)
 # -----------------------------------------------------------------------------
 # Define the plugin sources
 set(PLUGIN_SOURCES
-    src/CrossSpeciesComparisonTreeData.cpp
+    src/XSCTreeData.cpp
     src/InfoAction.cpp
-    src/CrossSpeciesComparisonTreeData.json
+    src/XSCTreeData.json
 )
 
 set(PLUGIN_HEADERS
-    src/CrossSpeciesComparisonTreeData.h
+    src/XSCTreeData.h
     src/InfoAction.h
 )
 
